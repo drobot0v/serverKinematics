@@ -11,7 +11,7 @@ api = Api(app)
 # Building up API endpoints:
 api.add_resource(RoboAPI, '/robot/<string:robo_id>', endpoint='robot')
 api.add_resource(FKineAPI, '/fkine/<string:robo_id>', endpoint='fkine')
-api.add_resource(IKineAPI, '/ikine/<string:robo_id>', endpoint=ikine)
+api.add_resource(IKineAPI, '/ikine/<string:robo_id>', endpoint='ikine')
 
 
 if __name__ == '__main__':
