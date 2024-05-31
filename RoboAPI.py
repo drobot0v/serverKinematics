@@ -18,11 +18,15 @@ class RoboAPI(Resource):
       
     self._reqparser.add_argument('num_of_joints', 
                                  type=int,
-                                  location='json')
+                                  location='json', 
+                                  required=False,
+                                  store_missing=False)
       
     self._reqparser.add_argument('links', type=dict,
                                   location='json',
-                                  help='The specs of a robot')
+                                  help='The specs of a robot', 
+                                  required=False,
+                                  store_missing=False)
 
     # Superclass constructor:
     super(RoboAPI, self).__init__()
@@ -75,4 +79,19 @@ class RoboAPI(Resource):
 
   def delete(self, robo_id):
       # Delete a robot
+      pass
+  
+
+  def post(self, robo_id):
+    try:
+      with MongoClient(self._db_uri) as client_:
+        data_ = dict(self._reqparser.parse_args())
+        col_ = client_[self._db_name][self._db_col_name]
+        doc_ = {'robo_id': robo_id} | data_
+        res_ = col_.insert_one(doc_)
+        if res_:
+          return Response(status=200, response=f'''POSTed new robot to DB: {res_.inserted_id}''')
+        else:
+          return Response(status=500, response=f'Failed to POST new robot to DB')
+    except Exception:
       pass
